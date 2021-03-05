@@ -1,4 +1,4 @@
-<h3>Version: 0.3.1</h3>  
+<h3>Version: 0.3.3</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -44,7 +44,19 @@ myConnectAndShow = async function(myPrefxToSearch=''){
    //    myTemp01 += server[x] + '<br>';
    // };
     document.getElementById('mySpan01').innerHTML += 'server.connected: '+    server.connected + '<br><br>'
-
+    var output = '';
+    for (var property in server) {
+        output += property + ': ' + server[property]+'; ';
+     }
+    console.log('output')
+    console.log(output)
+  
+  
+  
+  
+  
+  
+  
 
     const service = await server.getPrimaryService('battery_service');
     console.log('service as a table')
