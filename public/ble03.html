@@ -9,16 +9,8 @@ Github for this site at: <A href="https://github.com/hpssjellis/my-examples-of-w
 <script>
 
 
-const connectToDeviceAndSubscribeToUpdates33 = async () => {
-   const device = await navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] } ] } );
-   const server = await device.gatt.connect();
-   const service = await server.getPrimaryService('battery_service');
-   const characteristic = await service.getCharacteristic('battery_level');
-};
 
-
-
-connectToDeviceAndSubscribeToUpdates = async function(){ 
+myConnectAndShow = async function(){ 
   // const device = await navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'Thun', services: ['battery_service'],   }]  });
    //const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun'}], optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']   });
   // const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun', services: ['battery_service']  }   ]}  );
@@ -30,31 +22,41 @@ connectToDeviceAndSubscribeToUpdates = async function(){
     })
     console.log('device');
     console.log(device);
+   document.getElementById('mySpan01').innerHTML = 'device: '+ device + '<br><br>'
+   
 
     const server = await device.gatt.connect();
     console.log('server')
-    console.log(server)
+    console.log(server)   
+    document.getElementById('mySpan01').innerHTML += 'server: '+ server + '<br><br>'
 
 
     const service = await server.getPrimaryService('battery_service');
     console.log('service')
-    console.log(service)
+    console.log(service)  
+    document.getElementById('mySpan01').innerHTML += 'service: '+ service + '<br><br>'
 
     const characteristic = await service.getCharacteristic('battery_level');
     console.log('characteristic')
-    console.log(characteristic)
+    console.log(characteristic)   
+    document.getElementById('mySpan01').innerHTML += 'characteristic: '+ characteristic + '<br><br>'
 
 
     const reading = await characteristic.readValue();
     console.log('reading');
-    console.log(reading);
+    console.log(reading);   
+    document.getElementById('mySpan01').innerHTML += 'reading: '+ reading + '<br><br>'
 };
 
 </script>
 
+<input type=text id="myText01" value = "Thun"><br>
+
 <input type=button value="Connect-basic()" onclick="{ 
-   connectToDeviceAndSubscribeToUpdates()
+   myConnectAndShow()
 }"><br><br>
+
+<span id="mySpan01">...</span>
 
 
 
