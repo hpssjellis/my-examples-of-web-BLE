@@ -1,25 +1,34 @@
-<h3>Version: 0.2.20</h3>  
+<h3>Version: 0.3.0</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
 
 Github for this site at: <A href="https://github.com/hpssjellis/my-examples-of-web-BLE">https://github.com/hpssjellis/my-examples-of-web-BLE</a> <br><br>
 
+<b>Note: </b> The Specific settings are for the Tunderboard Sense 2 from Silicon Labs<br>
 
 <script>
 
 
 
-myConnectAndShow = async function(){ 
+myConnectAndShow = async function(myPrefxToSearch=''){ 
   // const device = await navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'Thun', services: ['battery_service'],   }]  });
    //const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun'}], optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']   });
   // const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun', services: ['battery_service']  }   ]}  );
   // const device = await navigator.bluetooth.requestDevice({filters: [{ name: 'Thunderboard #43147'}], services: ['battery_service']  });
   // const device = await navigator.bluetooth.requestDevice({filters: [{ id: '7ehTSz/c6M6e3HG1pyFPLA=='}], services: ['battery_service']  });
-    const device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
-        optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']
-    })
+  
+  
+    if (myPrefxToSearch == ''){
+      const device = await navigator.bluetooth.requestDevice({
+           acceptAllDevices: true,
+           optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']
+       })
+    } else {
+    
+    
+    } 
+    
    console.log('device as a table')
    console.table(device)  
   // document.getElementById('mySpan01').innerHTML = 'example: device.name: '+JSON.stringify( Object.entries(device), null, '<br>') + '<br><br>'
@@ -65,13 +74,21 @@ myConnectAndShow = async function(){
 
 </script>
 
-<input type=text id="myText01" value = "Thun"><br>
-
 <input type=button value="Connect-basic()" onclick="{ 
    myConnectAndShow()
 }"><br><br>
 
+
+
+
+BLE device prefix to search: <input type=text id="myText01" value = "Thun"><br>
+<input type=button value="Connect-basic()" onclick="{ 
+   myConnectAndShow(documment.getElementById('myText01').value)
+}"><br><br>
 <span id="mySpan01">...</span>
+
+
+
 
 
 
