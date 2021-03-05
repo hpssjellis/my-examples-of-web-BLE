@@ -1,4 +1,4 @@
-these deoms should be active at
+these demos should be active at
 
 https://hpssjellis.github.io/my-examples-of-web-BLE/public/index.html
 
