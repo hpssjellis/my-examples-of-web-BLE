@@ -1,4 +1,4 @@
-<h3>Version: 0.3.10</h3>  
+<h3>Version: 0.3.11</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -40,7 +40,7 @@ myConnectAndShow = async function(){
    console.log('device as a table')
    console.table(device)  
   
-   document.getElementById('mySpan01').innerHTML ='<br><br><br> Following saved to "device" from navigator.bluetooth.requestDevice<br>'
+   document.getElementById('mySpan01').innerHTML ='<br><br><br> Following saved to 'device' from navigator.bluetooth.requestDevice<br>'
    document.getElementById('mySpan01').innerHTML = '<b>example: device.name: '+ device.name + '</b> <br>'
    document.getElementById('mySpan01').innerHTML += await myShowObject(device)
   
@@ -50,7 +50,7 @@ myConnectAndShow = async function(){
     console.log('server as a table')
     console.table(server)  
 
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to "server" from device.gatt.connect(); <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to 'server' from device.gatt.connect(); <br>'
     document.getElementById('mySpan01').innerHTML += '<b>server.connected: '+    server.connected + '</b><br><br>'
   
    document.getElementById('mySpan01').innerHTML += await myShowObject(server)
@@ -61,7 +61,7 @@ myConnectAndShow = async function(){
     console.log('service as a table')
     console.table(service)  
   
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to "service" from server.getPrimaryService('battery_service'); <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to 'service' from server.getPrimaryService('battery_service'); <br>'
     document.getElementById('mySpan01').innerHTML += '<b>service.isPrimary: '+  service.isPrimary + '</b><br><br>'
 
    document.getElementById('mySpan01').innerHTML += await myShowObject(service)
@@ -72,7 +72,7 @@ myConnectAndShow = async function(){
     console.log('characteristic as a table')
     console.table(characteristic)   
   
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to "characteristic" from service.getCharacteristic('battery_level') <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to 'characteristic' from service.getCharacteristic('battery_level') <br>'
     document.getElementById('mySpan01').innerHTML += '<b>characteristic.uuid: '+  characteristic.uuid + '</b><br>'
 
    document.getElementById('mySpan01').innerHTML += await myShowObject(characteristic)
@@ -86,7 +86,7 @@ myConnectAndShow = async function(){
   
   
   
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to "reading" from characteristic.readValue() <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to 'reading' from characteristic.readValue() <br>'
     document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): Battery Reading is '+ reading.getUint8(0)+ '% </b><br>'
   
    document.getElementById('mySpan01').innerHTML += await myShowObject(reading)
