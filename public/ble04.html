@@ -31,14 +31,13 @@ myConnectAndShow = async function(){
     const server = await device.gatt.connect();
     console.log('server as a table')
     console.table(server)  
-    console.log('server.BluetoothDevice as a table')
-    console.table(server.BluetoothDevice)  
+ 
   
   //  let myTemp01 = ''
    // for (x in server) {
    //    myTemp01 += server[x] + '<br>';
    // };
-    document.getElementById('mySpan01').innerHTML += 'server: '+  myTemp01   //JSON.stringify(server, null, '<br>') + '<br><br>'
+    document.getElementById('mySpan01').innerHTML += 'server: '+  JSON.stringify(server, null, '<br>') + '<br><br>'
 
 
     const service = await server.getPrimaryService('battery_service');
