@@ -1,4 +1,4 @@
-<h3>Version: 0.2.12</h3>  
+<h3>Version: 0.2.14</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -33,7 +33,7 @@ myConnectAndShow = async function(){
     console.table(server)  
     let myTemp01 = ''
     for (x in server) {
-       myTemp01 += server[x] + '<br>';
+       myTemp01 += server.BluetoothDevice[x] + '<br>';
     };
     document.getElementById('mySpan01').innerHTML += 'server: '+  myTemp01   //JSON.stringify(server, null, '<br>') + '<br><br>'
 
