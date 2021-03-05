@@ -9,9 +9,20 @@ Github for this site at: <A href="https://github.com/hpssjellis/my-examples-of-w
 
 <script>
 
+  
+  
+myShowObject = async funciton(myObj){   
+    var myOutput = '';
+    for (var property in myObj) {
+        myOutput += property + ': ' + myObj[property]+'<br>';
+     }
+  return myOutput
+  }  
+  
 
 
 myConnectAndShow = async function(){ 
+  document.getElementById('mySpan01').innerHTML = ''
   // const device = await navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'Thun', services: ['battery_service'],   }]  });
    //const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun'}], optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']   });
   // const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun', services: ['battery_service']  }   ]}  );
@@ -29,7 +40,9 @@ myConnectAndShow = async function(){
    console.log('device as a table')
    console.table(device)  
   // document.getElementById('mySpan01').innerHTML = 'example: device.name: '+JSON.stringify( Object.entries(device), null, '<br>') + '<br><br>'
-   document.getElementById('mySpan01').innerHTML = 'example: device.name: ' + device.name + '<br><br>'
+    
+  
+   document.getElementById('mySpan01').innerHTML = myShowObject(device)
   
    
 
@@ -41,13 +54,8 @@ myConnectAndShow = async function(){
    //    myTemp01 += server[x] + '<br>';
    // };
     document.getElementById('mySpan01').innerHTML += 'server.connected: '+    server.connected + '<br><br>'
-  
-    var output = '';
-    for (var property in server) {
-        output += property + ': ' + server[property]+'; ';
-     }
-    console.log('output')
-    console.log(output)
+
+
   
   
   
