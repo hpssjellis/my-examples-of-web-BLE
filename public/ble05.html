@@ -20,7 +20,7 @@ myConnectAndShow = async function(myPrefxToSearch=''){
   
   
     if (myPrefxToSearch == ''){
-      device = await navigator.bluetooth.requestDevice({
+     let device = await navigator.bluetooth.requestDevice({
            acceptAllDevices: true,
            optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']
        })
