@@ -1,4 +1,4 @@
-<h3>Version: 0.2.17</h3>  
+<h3>Version: 0.2.19</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -34,13 +34,13 @@ myConnectAndShow = async function(){
    // for (x in server) {
    //    myTemp01 += server[x] + '<br>';
    // };
-    document.getElementById('mySpan01').innerHTML += 'server: '+  JSON.stringify(server, null, '<br>') + '<br><br>'
+    document.getElementById('mySpan01').innerHTML += 'server.connected: '+    server.connected + '<br><br>'
 
 
     const service = await server.getPrimaryService('battery_service');
     console.log('service as a table')
     console.table(service)  
-    document.getElementById('mySpan01').innerHTML += 'service: '+  JSON.stringify(service, null, '<br>') + '<br><br>'
+    document.getElementById('mySpan01').innerHTML += 'service.isPrimary: '+  service.isPrimary + '<br><br>'
 
   
   
@@ -48,17 +48,19 @@ myConnectAndShow = async function(){
     const characteristic = await service.getCharacteristic('battery_level');
     console.log('characteristic as a table')
     console.table(characteristic)   
-    document.getElementById('mySpan01').innerHTML += 'characteristic: '+  JSON.stringify(characteristic, null, '<br>') + '<br><br>'
+    document.getElementById('mySpan01').innerHTML += 'characteristic.uuid: '+  characteristic.uuid + '<br><br>'
 
   
   
     const reading = await characteristic.readValue();
-    console.log('reading as a table')
+    console.log('reading')
     console.table(reading)   
+     console.log('reading.getUint8(0)')
+     console.log(reading.getUint8(0))
   
   
   
-    document.getElementById('mySpan01').innerHTML += 'reading: '+ reading + '<br><br>'
+    document.getElementById('mySpan01').innerHTML += 'reading.getUint8(0): '+ reading.getUint8(0)+ '<br><br>'
 };
 
 </script>
