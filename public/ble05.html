@@ -1,4 +1,4 @@
-<h3>Version: 0.3.14</h3>  
+<h3>Version: 0.3.15</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -61,7 +61,7 @@ myConnectAndShow = async function(){
     console.log('service as a table')
     console.table(service)  
   
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to <b><i>service </i></b> from server.getPrimaryService('battery_service'); <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to <b><i>service </i></b> from server.getPrimaryService(\'battery_service\'); <br>'
     document.getElementById('mySpan01').innerHTML += '<b>service.isPrimary: '+  service.isPrimary + '</b><br><br>'
 
    document.getElementById('mySpan01').innerHTML += await myShowObject(service)
@@ -72,7 +72,7 @@ myConnectAndShow = async function(){
     console.log('characteristic as a table')
     console.table(characteristic)   
   
-    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to <b><i>characteristic </i></b> from service.getCharacteristic('battery_level') <br>'
+    document.getElementById('mySpan01').innerHTML =' <br><br><br> Following saved to <b><i>characteristic </i></b> from service.getCharacteristic(\'battery_level\') <br>'
     document.getElementById('mySpan01').innerHTML += '<b>characteristic.uuid: '+  characteristic.uuid + '</b><br>'
 
    document.getElementById('mySpan01').innerHTML += await myShowObject(characteristic)
