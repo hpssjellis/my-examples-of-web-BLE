@@ -1,4 +1,4 @@
-<h3>Version: 0.4.16</h3>  
+<h3>Version: 0.4.17</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -116,11 +116,7 @@ myConnectAndShow = async function(){
        document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
        document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): Battery Reading is '+ reading.getUint8(0)+ '% </b><br>'
 
-    } catch(err) { 
-                document.getElementById('mySpan01').innerHTML += '<br><b>'+ err.message+ '</b><br>'
-                 
-                document.getElementById('mySpan01').innerHTML += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' 
-                 }  
+    } catch(err) {  document.getElementById('mySpan01').innerHTML += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' }  
   
    // if (bluetoothDevice.gatt.connected) {
   //  bluetoothDevice.gatt.disconnect();
@@ -129,7 +125,7 @@ myConnectAndShow = async function(){
      if ( document.myDevice.gatt.connected ) {
        document.myDevice.gatt.disconnect()
      }
-   } catch(err) { document.getElementById('mySpan01').innerHTML += '<br><b>'+ err.message+ '</b><br>' }  
+   } catch(err) { document.getElementById('mySpan01').innerHTML +=  '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>'  }  
 };
 
 </script>
