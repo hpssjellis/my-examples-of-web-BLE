@@ -16,12 +16,17 @@ Github for this site at: <A href="https://github.com/hpssjellis/my-examples-of-w
   document.myCharacteristic
   
   
+   // try {
+   //    const reading = await document.myCharacteristic.readValue();
+   // } catch(err) { document.getElementById('mySpan01').innerHTML += '<br><b>'+ err.message+ '</b><br>' }     
   
 myShowObject = async function(myObj){   
-    var myOutput = '';
-    for (var property in myObj) {
-        myOutput += property + ': ' + myObj[property]+'<br>';
-     }
+  var myOutput = '';
+    try{
+       for (var property in myObj) {
+          myOutput += property + ': ' + myObj[property]+'<br>';
+       }
+    } catch(err) {myOutput += '<br> err.message: '+ '<b>'+ err.message+ '</b><br><br>' }  
   return myOutput
   }  
   
