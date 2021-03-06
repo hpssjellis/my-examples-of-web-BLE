@@ -1,4 +1,4 @@
-<h4>Version: 0.5.3</h4>  
+<h4>Version: 0.5.4</h4>  
 
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
@@ -86,7 +86,7 @@ myConnectAndShow = async function(){
     console.table(document.myAllServices)  
   
     document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myAllServices </i></b> from document.myServer.getPrimaryServices() <br>'
-    document.getElementById('mySpan01').innerHTML += '<b>Example: document.myAllServices[0].device.uuid: '+  document.myAllServices[0].device.uuid + '</b><br><br>'
+    document.getElementById('mySpan01').innerHTML += '<b>Example: document.myAllServices[0].uuid: '+  document.myAllServices[0].uuid + '</b><br><br>'
     document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices) 
 
     document.myService = await document.myServer.getPrimaryService('battery_service');
