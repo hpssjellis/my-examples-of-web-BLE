@@ -1,4 +1,4 @@
-<h3>Version: 0.4.2</h3>  
+<h3>Version: 0.4.3</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -40,6 +40,7 @@ myConnectAndShow = async function(){
      document.myDevice = await navigator.bluetooth.requestDevice({
            acceptAllDevices: true,
            optionalServices: [
+                              'battery_service',
                               '00001801-0000-1000-8000-00805f9b34fb', 
                               '00001800-0000-1000-8000-00805f9b34fb',
                               '0000180a-0000-1000-8000-00805f9b34fb',
@@ -47,7 +48,6 @@ myConnectAndShow = async function(){
                               'efd658ae-c400-ef33-76e7-91b00019103b',
                               '1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0',
                               'fcb89c40-c600-59f3-7dc3-5ece444a401b',
-                              '0000180f-0000-1000-8000-00805f9b34fb',
                               'ec61a454-ed00-a5e8-b8f9-de9ec026ec51'     
                              ]
        })
@@ -109,7 +109,7 @@ myConnectAndShow = async function(){
    myConnectAndShow()
 }"><br><br><br><br><br><br>
 
-
+<!--
 
 BLE device prefix to search: <input type=text id="myText01" value = "Thun"><br>
 <input type=button value="Connect-Search" onclick="{ 
