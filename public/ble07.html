@@ -1,4 +1,4 @@
-<h4>Version: 0.5.8</h4>  
+<h4>Version: 0.5.9</h4>  
 
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
@@ -92,7 +92,7 @@ myConnectAndShow = async function(){
    // document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices) 
   
     for (let myLoop01=0; myLoop01 < document.myAllServices.length - 1; myLoop01++){
-        document.getElementById('mySpan01').innerHTML += 'document.myAllServices[' +myLoop01+ ']: ' + document.myAllServices[myLoop01].index
+        document.getElementById('mySpan01').innerHTML += 'document.myAllServices[' +myLoop01+ ']: ' + document.myAllServices[myLoop01]
         document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices[myLoop01])
     }
   
