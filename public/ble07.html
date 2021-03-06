@@ -1,4 +1,4 @@
-<h3>Version: 0.5.0</h3>  
+<h3>Version: 0.5.1</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -14,6 +14,7 @@ Coding examples from: <a href="https://medium.com/going-fullstack/interact-with-
   // Global Variables
   document.myDevice
   document.myServer
+  document.myAllServices
   document.myService
   document.myCharacteristic
   document.myDefaultError = 'Try the same code on Android Chrome! ' 
@@ -77,13 +78,21 @@ myConnectAndShow = async function(){
     document.getElementById('mySpan01').innerHTML += '<b>server.connected: '+    document.myServer.connected + '</b><br><br>'  
     document.getElementById('mySpan01').innerHTML += await myShowObject(document.myServer)
 
-
+    //const services = await server.getPrimaryServices();
+  
+    document.myAllServices = await document.myServer.getPrimaryServices();
+    console.log('document.myAllServices as a table')
+    console.table(document.myAllServices)  
+  
+    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myAllServices </i></b> from document.myServer.getPrimaryServices() <br>'
+  //  document.getElementById('mySpan01').innerHTML += '<b>service.isPrimary: '+  document.myService.isPrimary + '</b><br><br>'
+    document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices) 
 
     document.myService = await document.myServer.getPrimaryService('battery_service');
     console.log('document.myService as a table')
     console.table(document.myService)  
   
-    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>service </i></b> from document.myServer.getPrimaryService(\'battery_service\'); <br>'
+    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myService </i></b> from document.myServer.getPrimaryService(\'battery_service\'); <br>'
     document.getElementById('mySpan01').innerHTML += '<b>service.isPrimary: '+  document.myService.isPrimary + '</b><br><br>'
     document.getElementById('mySpan01').innerHTML += await myShowObject(document.myService)
   
