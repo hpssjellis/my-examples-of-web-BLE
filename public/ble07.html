@@ -92,7 +92,7 @@ myConnectAndShow = async function(){
    // document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices) 
   
     for (let myLoop01=0; myLoop01 < document.myAllServices.length - 1; myLoop01++){
-        document.getElementById('mySpan01').innerHTML += 'document.myAllServices[' +myLoop01+ ']: ' + document.myAllServices[myLoop01]
+        document.getElementById('mySpan01').innerHTML += '<br><br>document.myAllServices[' +myLoop01+ ']: ' + myLoop01 + '<br>'
         document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices[myLoop01])
     }
   
