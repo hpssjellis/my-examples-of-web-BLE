@@ -1,4 +1,4 @@
-<h3>Version: 0.4.15</h3>  
+<h3>Version: 0.4.16</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -16,7 +16,7 @@ Coding examples from: <a href="https://medium.com/going-fullstack/interact-with-
   document.myServer
   document.myService
   document.myCharacteristic
-  document.myDefaultError = '<br>**************** err.message: <b>' + err.message + '</b><br><br>' 
+  document.myDefaultError = 'Try the same code on Android Chrome! ' 
   
 
 myShowObject = async function(myObj){   
@@ -26,7 +26,7 @@ myShowObject = async function(myObj){
           myOutput += property + ': ' + myObj[property]+'<br>';
        }
     } catch(err) {
-      myOutput += '<br> err.message: <b>' + err.message + '</b><br><br>' 
+      myOutput += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' 
       console.log('err.message')
       console.log(err.message)
     }  
@@ -119,7 +119,7 @@ myConnectAndShow = async function(){
     } catch(err) { 
                 document.getElementById('mySpan01').innerHTML += '<br><b>'+ err.message+ '</b><br>'
                  
-                document.getElementById('mySpan01').innerHTML += document.myDefaultError
+                document.getElementById('mySpan01').innerHTML += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' 
                  }  
   
    // if (bluetoothDevice.gatt.connected) {
