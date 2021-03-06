@@ -1,4 +1,4 @@
-<h4>Version: 0.5.6</h4>  
+<h4>Version: 0.5.7</h4>  
 
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
@@ -78,12 +78,10 @@ myConnectAndShow = async function(){
     document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myServer </i></b> from document.myDevice.gatt.connect(); <br>'
     document.getElementById('mySpan01').innerHTML += '<b>Example: document.myServer.connected: '+    document.myServer.connected + '</b><br><br>' 
     document.getElementById('mySpan01').innerHTML += await myShowObject(document.myServer)
-    for (let myLoop01 =0; myLoop01 <= 4; myLoop01++){
-        document.getElementById('mySpan01').innerHTML += await myShowObject(document.myServer[myLoop01])
-    }
 
 
-    //const services = await server.getPrimaryServices();
+
+    //All Services
   
     document.myAllServices = await document.myServer.getPrimaryServices();
     console.log('document.myAllServices as a table')
@@ -92,7 +90,13 @@ myConnectAndShow = async function(){
     document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myAllServices </i></b> from document.myServer.getPrimaryServices() <br>'
     document.getElementById('mySpan01').innerHTML += '<b>Example: document.myAllServices[0].uuid: '+  document.myAllServices[0].uuid + '</b><br><br>'
     document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices) 
-
+    for (let myLoop01=0; myLoop01 <= 4; myLoop01++){
+        document.getElementById('mySpan01').innerHTML += await myShowObject(document.myAllServices[myLoop01])
+    }
+  
+  
+  // One Service
+  
     document.myService = await document.myServer.getPrimaryService('battery_service');
     console.log('document.myService as a table')
     console.table(document.myService)  
