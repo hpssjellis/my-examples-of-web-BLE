@@ -1,4 +1,4 @@
-<h4>Version: 0.5.12</h4>  
+<h4>Version: 0.0.1</h4>  
 
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
@@ -50,15 +50,9 @@ myConnectAndShow = async function(){
      document.myDevice = await navigator.bluetooth.requestDevice({
            acceptAllDevices: true,
            optionalServices: [
-                              'battery_service',                            //0000180f-0000-1000-8000-00805f9b34fb for battery service
-                              '00001801-0000-1000-8000-00805f9b34fb',       //'Generic Attribute'
-                              '00001800-0000-1000-8000-00805f9b34fb',       //'Generic Access'
-                              '0000180a-0000-1000-8000-00805f9b34fb',       //'Device Information'
-                              '00001815-0000-1000-8000-00805f9b34fb',       //'Automation IO'
-                              'efd658ae-c400-ef33-76e7-91b00019103b',       // 'unknown service'
-                              '1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0',       // 'unknown service'
-                              'fcb89c40-c600-59f3-7dc3-5ece444a401b',       // 'unknown service'
-                              'ec61a454-ed00-a5e8-b8f9-de9ec026ec51'        // 'unknown service'  
+                              '19b10000-e8f2-537e-4f6c-d104768a1214',        //ledService
+                              '19b10000-e8f2-537e-4f6c-d104768a1214,       //switchCharacteristic
+
                              ]
        })
 
