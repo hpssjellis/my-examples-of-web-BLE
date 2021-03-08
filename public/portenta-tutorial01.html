@@ -1,4 +1,4 @@
-<h4>Version: 0.0.2</h4>  
+<h4>Version: 0.0.3</h4>  
 
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
@@ -95,7 +95,7 @@ myConnectAndShow = async function(){
   
   // One Service
   
-    document.myService = await document.myServer.getPrimaryService('battery_service');
+    document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
     console.log('document.myService as a table')
     console.table(document.myService)  
   
@@ -105,7 +105,7 @@ myConnectAndShow = async function(){
   
   
   
-    document.myCharacteristic = await document.myService.getCharacteristic('battery_level');
+    document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
     console.log('document.myCharacteristic as a table')
     console.table(document.myCharacteristic)   
   
