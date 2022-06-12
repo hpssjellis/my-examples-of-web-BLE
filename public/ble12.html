@@ -115,8 +115,10 @@ myConnectAndShow = async function(){
        console.log('reading.getUint8(0)')
        console.log(myRead)
       
-        let myOn = new Uint8Array(0x00);
-        let myOff = new Uint8Array(0x01);
+       // let myOn = new Uint8Array(0x00);
+       // let myOff = new Uint8Array(0x01);
+        let myOn = new Uint8Array(0);
+        let myOff = new Uint8Array(1);
         await document.myCharacteristic.writeValue(myOn);
         document.getElementById('mySpan01').innerHTML +=' turn on <br>'
       
@@ -128,7 +130,7 @@ myConnectAndShow = async function(){
        // await document.myCharacteristic.writeValue(myOff);
       // use setTimeout here
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); document.getElementById('mySpan01').innerHTML +=' turn off at 1 S <br>'; }, 1000);
-       setTimeout(async function(){ await document.myCharacteristic.writeValue(myOn); document.getElementById('mySpan01').innerHTML +=' turn on at 1 S <br>';  }, 2000);
+       setTimeout(async function(){ await document.myCharacteristic.writeValue(myOn); document.getElementById('mySpan01').innerHTML +=' turn on at 2 S <br>';  }, 2000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); document.getElementById('mySpan01').innerHTML +=' turn off at 3 S <br>';  }, 3000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOn); document.getElementById('mySpan01').innerHTML +=' turn off at 4 S <br>';  }, 4000);
   
