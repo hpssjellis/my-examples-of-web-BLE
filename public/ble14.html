@@ -1,4 +1,4 @@
-<h3>Version: 0.5.6-44</h3>  
+<h3>Version: 0.5.6-45</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -156,6 +156,18 @@ myConnectAndShow = async function(){
         await document.myCharacteristic.writeValue(myOn);
         document.getElementById('mySpan01').innerHTML +=' LED has been turned on <br>'
       
+        await document.myCharacteristic.writeValue(myOff);
+        document.getElementById('mySpan01').innerHTML +=' LED has been turned off <br>'
+      
+        await document.myCharacteristic.writeValue(myOn);
+        document.getElementById('mySpan01').innerHTML +=' LED has been turned on <br>'
+      
+        await document.myCharacteristic.writeValue(myOff);
+        document.getElementById('mySpan01').innerHTML +=' LED has been turned off <br>'
+      
+        await document.myCharacteristic.writeValue(myOn);
+        document.getElementById('mySpan01').innerHTML +=' LED has been turned on <br>'
+      
       
       /*
         for (let myIt=0; myIt <= 3; myIt++){   
@@ -175,11 +187,18 @@ myConnectAndShow = async function(){
        // document.getElementById('mySpan01').innerHTML +=' turn on <br>'
        // await document.myCharacteristic.writeValue(myOff);
       // use setTimeout here
+      
+      
+      
+      /*
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); document.getElementById('mySpan01').innerHTML +=' turn off at 1 S <br>'; }, 1000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOn); document.getElementById('mySpan01').innerHTML +=' turn on at 2 S <br>';  }, 2000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); document.getElementById('mySpan01').innerHTML +=' turn off at 3 S <br>';  }, 3000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOn); document.getElementById('mySpan01').innerHTML +=' turn off at 4 S <br>';  }, 4000);
   
+      */
+      
+      
        document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
        document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): LED Reading is '+ reading.getUint8(0)+ ' </b><br>'
 
