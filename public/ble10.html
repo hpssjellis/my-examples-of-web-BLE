@@ -1,0 +1,152 @@
+<h3>Version: 0.4.17</h3>  
+<h2 align=center>Web BLE simple Javascript examples for the browser</h2>
+
+Presently output is in the console! ctrl-shit-i on windows or Linux<br>
+
+Github for this site at: <A href="https://github.com/hpssjellis/my-examples-of-web-BLE">https://github.com/hpssjellis/my-examples-of-web-BLE</a> <br><br>
+
+<b>Note: </b> The Specific settings are for the Thunderboard Sense 2 from Silicon Labs<br>
+Coding examples from: <a href="https://medium.com/going-fullstack/interact-with-bluetooth-devices-using-the-web-bluetooth-api-7984b2509939" >reference</a></a><br>
+
+
+<script>
+
+  // Global Variables
+  document.myDevice
+  document.myServer
+  document.myService
+  document.myCharacteristic
+  document.myDefaultError = 'Try the same code on Android Chrome! ' 
+  
+
+myShowObject = async function(myObj){   
+  var myOutput = '';
+    try{
+       for (var property in myObj) {
+          myOutput += property + ': ' + myObj[property]+'<br>';
+       }
+    } catch(err) {
+      myOutput += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' 
+      console.log('err.message')
+      console.log(err.message)
+    }  
+  return myOutput
+  }  
+  
+
+
+myConnectAndShow = async function(){ 
+  document.getElementById('mySpan01').innerHTML = ''
+  // const device = await navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'Thun', services: ['battery_service'],   }]  });
+   //const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun'}], optionalServices: ['battery_service', '162348d9-d5a8-4870-8086-8e152fd06a92']   });
+  // const device = await navigator.bluetooth.requestDevice({filters: [{ namePrefix: 'Thun', services: ['battery_service']  }   ]}  );
+  // const device = await navigator.bluetooth.requestDevice({filters: [{ name: 'Thunderboard #43147'}], services: ['battery_service']  });
+  // const device = await navigator.bluetooth.requestDevice({filters: [{ id: '7ehTSz/c6M6e3HG1pyFPLA=='}], services: ['battery_service']  });
+  
+  
+
+     document.myDevice = await navigator.bluetooth.requestDevice({
+           acceptAllDevices: true,
+           optionalServices: [
+                              'battery_service',                                       //0000180f-0000-1000-8000-00805f9b34fb for battery service
+                              '00001801-0000-1000-8000-00805f9b34fb', 
+                              '00001800-0000-1000-8000-00805f9b34fb',
+                              '0000180a-0000-1000-8000-00805f9b34fb',
+                              '00001815-0000-1000-8000-00805f9b34fb',
+                              'efd658ae-c400-ef33-76e7-91b00019103b',
+                              '1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0',
+                              'fcb89c40-c600-59f3-7dc3-5ece444a401b',
+                              'ec61a454-ed00-a5e8-b8f9-de9ec026ec51'     
+                             ]
+       })
+
+   console.log('document.myDevice as a table')
+   console.table(document.myDevice)  
+  
+   document.getElementById('mySpan01').innerHTML +='<br><br><br> Following saved to  <b><i>document.myDevice </i></b> from navigator.bluetooth.requestDevice<br>'
+   document.getElementById('mySpan01').innerHTML += '<b>example: document.myDevice.name: '+ document.myDevice.name + '</b> <br>'
+   document.getElementById('mySpan01').innerHTML += await myShowObject(document.myDevice)
+  
+   
+
+    document.myServer = await document.myDevice.gatt.connect();
+    console.log('document.myServer as a table')
+    console.table(document.myServer)  
+
+    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myServer </i></b> from document.myDevice.gatt.connect(); <br>'
+    document.getElementById('mySpan01').innerHTML += '<b>server.connected: '+    document.myServer.connected + '</b><br><br>'  
+    document.getElementById('mySpan01').innerHTML += await myShowObject(document.myServer)
+
+
+
+    document.myService = await document.myServer.getPrimaryService('battery_service');
+    console.log('document.myService as a table')
+    console.table(document.myService)  
+  
+    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>service </i></b> from document.myServer.getPrimaryService(\'battery_service\'); <br>'
+    document.getElementById('mySpan01').innerHTML += '<b>service.isPrimary: '+  document.myService.isPrimary + '</b><br><br>'
+    document.getElementById('mySpan01').innerHTML += await myShowObject(document.myService)
+  
+  
+  
+    document.myCharacteristic = await document.myService.getCharacteristic('battery_level');
+    console.log('document.myCharacteristic as a table')
+    console.table(document.myCharacteristic)   
+  
+    document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>document.myCharacteristic </i></b> from document.myService.getCharacteristic(\'battery_level\') <br>'
+    document.getElementById('mySpan01').innerHTML += '<b>characteristic.uuid: '+  document.myCharacteristic.uuid + '</b><br>'
+    document.getElementById('mySpan01').innerHTML += await myShowObject(document.myCharacteristic)
+  
+  
+//  try {
+//  adddlert("Welcome guest!");
+//}
+//catch(err) {
+ // document.getElementById("demo").innerHTML = err.message;
+//}
+  
+    try {
+       const reading = await document.myCharacteristic.readValue();
+  
+       console.log('reading')
+       console.table(reading)   
+       console.log('reading.getUint8(0)')
+       console.log(reading.getUint8(0))
+  
+       document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
+       document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): Battery Reading is '+ reading.getUint8(0)+ '% </b><br>'
+
+    } catch(err) {  document.getElementById('mySpan01').innerHTML += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' }  
+  
+   // if (bluetoothDevice.gatt.connected) {
+  //  bluetoothDevice.gatt.disconnect();
+  
+  try{
+     if ( document.myDevice.gatt.connected ) {
+       document.myDevice.gatt.disconnect()
+     }
+   } catch(err) { document.getElementById('mySpan01').innerHTML +=  '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>'  }  
+};
+
+</script>
+
+<input type=button value="Connect-basic()" onclick="{ 
+   myConnectAndShow()
+}"><br><br><br><br><br><br>
+
+<!--
+
+BLE device prefix to search: <input type=text id="myText01" value = "Thun"><br>
+<input type=button value="Connect-Search" onclick="{ 
+  // myConnectAndShow(documment.getElementById('myText01').value)
+}"><br><br>
+
+
+-->
+
+<span id="mySpan01">...</span>
+
+
+
+
+
