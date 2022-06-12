@@ -1,4 +1,4 @@
-<h3>Version: 0.5.4-38</h3>  
+<h3>Version: 0.5.4-39</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -127,10 +127,10 @@ myConnectAndShow = async function(){
 
       
         const myOnBuffer = new ArrayBuffer(2);
-        const myOn = new Int32Array(myOnBuffer);
+        const myOn = new Int8Array(myOnBuffer);
       
         const myOffBuffer = new ArrayBuffer(2);
-        const myOff = new Int32Array(myOffBuffer);
+        const myOff = new Int8Array(myOffBuffer);
               
         myOn[0] = 0
         myOn[1] = 0
