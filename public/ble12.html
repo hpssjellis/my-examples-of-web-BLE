@@ -1,4 +1,4 @@
-<h3>Version: 0.5.2-30</h3>  
+<h3>Version: 0.5.3-31</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -127,12 +127,28 @@ myConnectAndShow = async function(){
         document.getElementById('mySpan01').innerHTML +=' turn on <br>'
        // await document.myCharacteristic.writeValue(myOff);
       // use setTimeout here
+       setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); }, 1000);
        setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); }, 2000);
+       setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); }, 3000);
+       setTimeout(async function(){ await document.myCharacteristic.writeValue(myOff); }, 4000);
   
        document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
        document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): LED Reading is '+ reading.getUint8(0)+ ' </b><br>'
 
     } catch(err) {  document.getElementById('mySpan01').innerHTML += '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>' }  
+  
+  
+  
+       setTimeout(async function(){ 
+         
+  try{
+     if ( document.myDevice.gatt.connected ) {
+       document.myDevice.gatt.disconnect()
+     }
+   } catch(err) { document.getElementById('mySpan01').innerHTML +=  '<br>' + document.myDefaultError + ' err.message: <b>' + err.message + '</b><br><br>'  
+ } 
+       
+       },6000);
   
    // if (bluetoothDevice.gatt.connected) {
   //  bluetoothDevice.gatt.disconnect();
