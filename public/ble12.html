@@ -1,4 +1,4 @@
-<h3>Version: 0.5.3-33</h3>  
+<h3>Version: 0.5.3-34</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -119,8 +119,8 @@ myConnectAndShow = async function(){
        // let myOff = new Uint8Array(0x01);
         let myOn = new Uint8Array(0);     // weird modern microcontrollers where the onboard LED is set LOW to power on as it completes the 3V3 circuit to GND
         let myOff = new Uint8Array(1);
-        await document.myCharacteristic.writeValue(myOn);
-        document.getElementById('mySpan01').innerHTML +=' turn on <br>'
+        await document.myCharacteristic.writeValue(myOff);
+        document.getElementById('mySpan01').innerHTML +=' turn off <br>'
       
        // await document.myCharacteristic.writeValue(myOff);
        // document.getElementById('mySpan01').innerHTML +=' turn off <br>'
