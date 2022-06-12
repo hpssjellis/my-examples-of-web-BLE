@@ -1,4 +1,4 @@
-<h3>Version: 0.4.18</h3>  
+<h3>Version: 0.4.19</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -80,7 +80,7 @@ myConnectAndShow = async function(){
 
 
 
-    document.myService = await document.myServer.getPrimaryService('battery_service');
+    document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
     console.log('document.myService as a table')
     console.table(document.myService)  
   
@@ -90,7 +90,7 @@ myConnectAndShow = async function(){
   
   
   
-    document.myCharacteristic = await document.myService.getCharacteristic('battery_level');
+    document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
     console.log('document.myCharacteristic as a table')
     console.table(document.myCharacteristic)   
   
