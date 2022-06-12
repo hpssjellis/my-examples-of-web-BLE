@@ -127,7 +127,7 @@ myConnectAndShow = async function(){
         document.getElementById('mySpan01').innerHTML +=' turn on <br>'
        // await document.myCharacteristic.writeValue(myOff);
       // use setTimeout here
-
+       setTimeout(function(){ await document.myCharacteristic.writeValue(myOff); }, 2000);
   
        document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
        document.getElementById('mySpan01').innerHTML += '<b>reading.getUint8(0): LED Reading is '+ reading.getUint8(0)+ ' </b><br>'
