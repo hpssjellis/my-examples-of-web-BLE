@@ -140,8 +140,8 @@ myConnectAndShow = async function(){
       
         const myOn = Uint8Array.of(1);
         const myOff = Uint8Array.of(0);
-        await document.myCharacteristic.writeValue(myOff);
-        document.getElementById('mySpan01').innerHTML +=' turn off <br>'
+        await document.myCharacteristic.writeValue(myOn);
+        document.getElementById('mySpan01').innerHTML +=' LED has been turned on <br>'
       
        // await document.myCharacteristic.writeValue(myOff);
        // document.getElementById('mySpan01').innerHTML +=' turn off <br>'
