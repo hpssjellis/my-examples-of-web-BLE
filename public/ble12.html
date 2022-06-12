@@ -117,8 +117,8 @@ myConnectAndShow = async function(){
       
        // let myOn = new Uint8Array(0x00);
        // let myOff = new Uint8Array(0x01);
-        let myOn = new Uint8Array(0);     // weird modern microcontrollers where the onboard LED is set LOW to power on as it completes the 3V3 circuit to GND
-        let myOff = new Uint8Array(1);
+        let myOn = new Uint8Array(00);     // weird modern microcontrollers where the onboard LED is set LOW to power on as it completes the 3V3 circuit to GND
+        let myOff = new Uint8Array(01);
         await document.myCharacteristic.writeValue(myOff);
         document.getElementById('mySpan01').innerHTML +=' turn off <br>'
       
