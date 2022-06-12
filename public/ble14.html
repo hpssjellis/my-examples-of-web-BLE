@@ -144,6 +144,8 @@ myConnectAndShow = async function(){
         await document.myCharacteristic.writeValue(myOn);
         document.getElementById('mySpan01').innerHTML +=' LED has been turned on <br>'
       
+      
+      /*
         for (let myIt=0; myIt <= 3; myIt++){   
           await document.myCharacteristic.writeValue(myOn);       
           document.getElementById('mySpan01').innerHTML += ', Loop # ' + myIt   // removed because this may slow down the loop
@@ -151,7 +153,7 @@ myConnectAndShow = async function(){
        }
       
       
-      
+      */
       
       
        // await document.myCharacteristic.writeValue(myOff);
