@@ -1,4 +1,4 @@
-<h3>Version: 0.4.23</h3>  
+<h3>Version: 0.4.24</h3>  
 <h2 align=center>Web BLE simple Javascript examples for the browser</h2>
 
 Presently output is in the console! ctrl-shit-i on windows or Linux<br>
@@ -116,13 +116,13 @@ myConnectAndShow = async function(){
        console.log(myRead)
       
       
-        await document.myCharacteristic.writeValue((byte)0x01);
+        await document.myCharacteristic.writeValue(0x01);
         delay(500);
-        await document.myCharacteristic.writeValue((byte)0x00);
+        await document.myCharacteristic.writeValue(0x00);
         delay(500);        
-        await document.myCharacteristic.writeValue((byte)0x01);
+        await document.myCharacteristic.writeValue(0x01);
         delay(500);
-        await document.myCharacteristic.writeValue((byte)0x00);
+        await document.myCharacteristic.writeValue(0x00);
         delay(500);
   
        document.getElementById('mySpan01').innerHTML +=' <br><br><br> Following saved to <b><i>reading </i></b> from characteristic.readValue() <br>'
