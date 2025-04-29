@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Web Bluetooth Demo</h2>
+    <p id="myStatus">Status: Not connected</p>
+    <p id="myData">Data: </p>
+
+    <input type="button" value="Connect to BLE Device" onclick="myConnectBLE()">
+
+    <script>
+      let myDevice, myCharacteristic;
+
+      async function myConnectBLE() {
+        document.getElementById("myStatus").innerText = "Status: Connecting...";
+        try {
+          myDevice = await navigator.bluetooth.requestDevice({
+            filters: [{ namePrefix: "XIAO" }],
+            optionalServices: ["12345678-1234-5678-1234-56789abcdef0"] // Replace with your service UUID
+          });
+
+          const myServer = await myDevice.gatt.connect();
+          const myService = await myServer.getPrimaryService("12345678-1234-5678-1234-56789abcdef0"); // Replace
+          myCharacteristic = await myService.getCharacteristic("abcdefab-1234-5678-1234-56789abcdef0"); // Replace
+
+          const myValue = await myCharacteristic.readValue();
+          const myText = new TextDecoder().decode(myValue);
+          document.getElementById("myData").innerText = "Data: " + myText;
+          document.getElementById("myStatus").innerText = "Status: Connected and data read";
+        } catch (error) {
+          document.getElementById("myStatus").innerText = "Status: Error - " + error;
+        }
+      }
+    </script>
+  </body>
+</html>
+
+
