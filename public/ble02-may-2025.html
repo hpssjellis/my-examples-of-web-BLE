@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arduino BLE LED Control</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Basic inline styles for minimal presentation */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #ledControl {
+            margin-top: 20px;
+            display: none; /* Hidden until connected */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Arduino BLE LED Control</h1>
+    <button id="connectButton">Connect to Arduino</button>
+    <div id="status"></div>
+
+    <div id="ledControl">
+        <p>Control Built-in LED:</p>
+        <button id="ledOnButton">Turn LED ON</button>
+        <button id="ledOffButton">Turn LED OFF</button>
+    </div>
+
+    <script>
+        // Define the UUIDs for the BLE service and characteristic
+        const ARDUINO_SERVICE_UUID = '19b10000-e8f2-537e-4f6c-d104768a1214';
+        const LED_CHARACTERISTIC_UUID = '19b10001-e8f2-537e-4f6c-d104768a1214';
+
+        let arduinoDevice; // Stores the connected BLE device object
+        let ledCharacteristic; // Stores the BLE characteristic for LED control
+
+        // Get references to HTML elements
+        const connectButton = document.getElementById('connectButton');
+        const statusDiv = document.getElementById('status');
+        const ledControlDiv = document.getElementById('ledControl');
+        const ledOnButton = document.getElementById('ledOnButton');
+        const ledOffButton = document.getElementById('ledOffButton');
+
+        // Add event listeners to buttons
+        connectButton.addEventListener('click', connectToArduino);
+        ledOnButton.addEventListener('click', () => writeLEDCharacteristic(1)); // 1 for ON
+        ledOffButton.addEventListener('click', () => writeLEDCharacteristic(0)); // 0 for OFF
+
+        /**
+         * Updates the status message displayed on the webpage.
+         * @param {string} message - The message to display.
+         * @param {string} color - The color of the message (e.g., 'black', 'green', 'red', 'orange').
+         */
+        function updateStatus(message, color = 'black') {
+            statusDiv.textContent = message;
+            statusDiv.style.color = color;
+        }
+
+        /**
+         * Initiates the Web BLE connection process to the Arduino.
+         */
+        async function connectToArduino() {
+            // Check if Web Bluetooth is supported by the browser
+            if (!navigator.bluetooth) {
+                updateStatus('Web Bluetooth is not supported by this browser. Please use Chrome on Android, Chrome OS, Linux, or Windows.', 'red');
+                console.error('Web Bluetooth not supported.');
+                return;
+            }
+
+            try {
+                updateStatus('Searching for Arduino...');
+                // Request a BLE device from the user.
+                // Filter by the service UUID to only show relevant devices.
+                // Add optionalServices to ensure the characteristic is discovered immediately.
+                arduinoDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ services: [ARDUINO_SERVICE_UUID] }],
+                    optionalServices: [ARDUINO_SERVICE_UUID]
+                });
+
+                updateStatus(`Connecting to "${arduinoDevice.name || 'Arduino Nano 33 BLE Sense'}"...`);
+                // Add an event listener for when the device disconnects.
+                arduinoDevice.addEventListener('gattserverdisconnected', onDisconnected);
+                // Connect to the GATT server of the selected device.
+                const server = await arduinoDevice.gatt.connect();
+
+                updateStatus('Discovering service...');
+                // Get the primary service using its UUID.
+                const service = await server.getPrimaryService(ARDUINO_SERVICE_UUID);
+
+                updateStatus('Discovering characteristic...');
+                // Get the LED characteristic using its UUID.
+                ledCharacteristic = await service.getCharacteristic(LED_CHARACTERISTIC_UUID);
+
+                updateStatus('Connected to Arduino!', 'green'); // Green for success
+                ledControlDiv.style.display = 'block'; // Show the LED control buttons
+                connectButton.disabled = true; // Disable the connect button
+
+            } catch (error) {
+                let errorMessage;
+                // Specific handling for common Web BLE errors
+                if (error.name === 'NotFoundError') {
+                    errorMessage = 'No Arduino found or selection cancelled. Ensure Bluetooth is on, the Arduino is powered, and the correct sketch is uploaded.';
+                } else if (error.name === 'NetworkError') {
+                    errorMessage = 'Bluetooth connection failed. Check if Bluetooth is enabled and try again.';
+                } else if (typeof error === 'object' && error !== null && Object.keys(error).length === 0) {
+                    // Fallback for truly empty error objects
+                    errorMessage = 'An unknown Web BLE error occurred. This might be due to Bluetooth being off, no devices found, or permission issues. Please check your device\'s Bluetooth settings and ensure the Arduino is advertising.';
+                } else {
+                    // General error message for other errors
+                    errorMessage = error.message || error.name || error.toString() || 'An unknown error occurred.';
+                }
+                updateStatus(`Connection failed: ${errorMessage}`, 'red'); // Red for error
+                console.error('Web BLE Error:', error); // Always log the full error object for debugging
+            }
+        }
+
+        /**
+         * Handles the disconnection event from the BLE device.
+         * @param {Event} event - The disconnection event.
+         */
+        function onDisconnected(event) {
+            const device = event.target;
+            updateStatus(`"${device.name || 'Arduino Nano 33 BLE Sense'}" disconnected.`, 'orange'); // Orange for warning
+            ledControlDiv.style.display = 'none'; // Hide LED controls
+            connectButton.disabled = false; // Re-enable the connect button
+            arduinoDevice = null;
+            ledCharacteristic = null;
+        }
+
+        /**
+         * Writes a value to the LED characteristic to control the LED.
+         * @param {number} value - 1 to turn LED ON, 0 to turn LED OFF.
+         */
+        async function writeLEDCharacteristic(value) {
+            if (!ledCharacteristic) {
+                updateStatus('Not connected to Arduino or LED characteristic not found.', 'red');
+                return;
+            }
+            try {
+                updateStatus(`Sending command to turn LED ${value === 1 ? 'ON' : 'OFF'}...`);
+                // Write the value (0x01 for ON, 0x00 for OFF) to the characteristic.
+                await ledCharacteristic.writeValue(new Uint8Array([value]));
+                updateStatus(`LED command sent: ${value === 1 ? 'ON' : 'OFF'}`, 'blue'); // Blue for action
+            } catch (error) {
+                let errorMessage;
+                if (error.name === 'NetworkError') {
+                    errorMessage = 'Failed to write: Bluetooth connection lost or device out of range.';
+                } else if (typeof error === 'object' && error !== null && Object.keys(error).length === 0) {
+                    errorMessage = 'An unknown Web BLE error occurred during write operation. This might be due to Bluetooth being off or connection issues.';
+                } else {
+                    errorMessage = error.message || error.name || error.toString() || 'An unknown error occurred.';
+                }
+                updateStatus(`Failed to write to LED characteristic: ${errorMessage}`, 'red');
+                console.error('Write Characteristic Error:', error); // Log the full error object for detailed debugging
+            }
+        }
+    </script>
+
+</body>
+</html>
