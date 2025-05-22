@@ -1,3 +1,10 @@
+
+May 2025 update
+
+Using for the esp32   https://randomnerdtutorials.com/esp32-web-bluetooth/   
+
+
+
 these demos should be active at
 
 https://hpssjellis.github.io/my-examples-of-web-BLE/public/index.html
