@@ -1,0 +1,58 @@
+<h2 align="center">Two-Way BLE Control for Portenta</h2>
+<input type="button" value="Connect to Portenta" onclick="{ myConnectBLE() }">
+<br><br>
+<input type="button" value="LED ON" onclick="{ myWriteLED(1) }">
+<input type="button" value="LED OFF" onclick="{ myWriteLED(0) }">
+<br><br>
+<span id="mySpan01">Status: <i>Not connected</i></span>
+
+<script>
+  document.myDevice = null
+  document.myServer = null
+  document.myService = null
+  document.myCharacteristic = null
+
+  async function myConnectBLE() {
+    document.getElementById('mySpan01').innerHTML = "Connecting..."
+
+    try {
+      document.myDevice = await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: ['19b10000-e8f2-537e-4f6c-d104768a1214']
+      });
+
+      document.myServer = await document.myDevice.gatt.connect();
+      document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+      document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
+
+      await document.myCharacteristic.startNotifications();
+
+      document.myCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
+        let myVal = event.target.value.getUint8(0);
+        document.getElementById('mySpan01').innerHTML += `<br><b>Notification:</b> LED is ${myVal ? 'ON' : 'OFF'}`;
+        console.log("Notification received:", myVal);
+      });
+
+      document.getElementById('mySpan01').innerHTML = "Connected to " + document.myDevice.name;
+
+    } catch (err) {
+      document.getElementById('mySpan01').innerHTML = "Connection failed: " + err.message;
+      console.error(err);
+    }
+  }
+
+  async function myWriteLED(myVal) {
+    if (!document.myCharacteristic) {
+      alert("Connect first!");
+      return;
+    }
+
+    try {
+      const myBuffer = Uint8Array.of(myVal);
+      await document.myCharacteristic.writeValue(myBuffer);
+      document.getElementById('mySpan01').innerHTML += `<br>Command sent: LED ${myVal ? 'ON' : 'OFF'}`;
+    } catch (err) {
+      document.getElementById('mySpan01').innerHTML += `<br>Error writing: ${err.message}`;
+    }
+  }
+</script>
