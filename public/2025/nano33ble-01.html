@@ -1,0 +1,65 @@
+#include <ArduinoBLE.h>
+
+BLEService ledService("19b10000-e8f2-537e-4f6c-d104768a1214");
+
+// Now includes BLENotify
+BLEByteCharacteristic switchCharacteristic(
+  "19b10000-e8f2-537e-4f6c-d104768a1214",
+  BLERead | BLEWrite | BLENotify
+);
+
+const int ledPin = LED_BUILTIN;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
+
+  if (!BLE.begin()) {
+    Serial.println("Starting BLE failed!");
+    while (1);
+  }
+
+  BLE.setLocalName("LED-Portenta-01");
+  BLE.setAdvertisedService(ledService);
+
+  ledService.addCharacteristic(switchCharacteristic);
+  BLE.addService(ledService);
+  switchCharacteristic.writeValue(0);
+
+  BLE.advertise();
+
+  Serial.println("BLE LED Control with notify ready");
+}
+
+void loop() {
+  BLEDevice central = BLE.central();
+
+  if (central) {
+    Serial.print("Connected to central: ");
+    Serial.println(central.address());
+
+    while (central.connected()) {
+      if (switchCharacteristic.written()) {
+        byte val = switchCharacteristic.value();
+        Serial.print("Received: ");
+        Serial.println(val);
+
+        if (val) {
+          digitalWrite(ledPin, LOW);
+          Serial.println("LED ON");
+        } else {
+          digitalWrite(ledPin, HIGH);
+          Serial.println("LED OFF");
+        }
+
+        // Notify the browser with the current state
+        switchCharacteristic.writeValue(val);
+        switchCharacteristic.notify();
+      }
+    }
+
+    Serial.print("Disconnected from central: ");
+    Serial.println(central.address());
+  }
+}
