@@ -1,0 +1,57 @@
+<h2 align="center">Two-Way BLE String Example</h2>
+<input type="button" value="Connect BLE" onclick="{ myConnectBLE() }"><br><br>
+<input type="button" value="Send: start" onclick="{ mySendString('start') }">
+<input type="button" value="Send: stop" onclick="{ mySendString('stop') }"><br><br>
+<span id="mySpan01">Status: <i>Not connected</i></span><br>
+
+<script>
+  document.myDevice = null
+  document.myServer = null
+  document.myService = null
+  document.myCharacteristic = null
+
+  async function myConnectBLE() {
+    document.getElementById('mySpan01').innerHTML = "Connecting..."
+
+    try {
+      document.myDevice = await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: ['19b10000-e8f2-537e-4f6c-d104768a1214']
+      });
+
+      document.myServer = await document.myDevice.gatt.connect();
+      document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+      document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
+
+      await document.myCharacteristic.startNotifications();
+      document.myCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
+        let decoder = new TextDecoder("utf-8");
+        let message = decoder.decode(event.target.value);
+        document.getElementById('mySpan01').innerHTML += `<br><b>From Arduino:</b> ${message}`;
+        console.log("Notification:", message);
+      });
+
+      document.getElementById('mySpan01').innerHTML = "Connected to: " + document.myDevice.name;
+
+    } catch (err) {
+      document.getElementById('mySpan01').innerHTML = "Connection failed: " + err.message;
+      console.error(err);
+    }
+  }
+
+  async function mySendString(myText) {
+    if (!document.myCharacteristic) {
+      alert("Connect first!");
+      return;
+    }
+
+    try {
+      let encoder = new TextEncoder();
+      let data = encoder.encode(myText);
+      await document.myCharacteristic.writeValue(data);
+      document.getElementById('mySpan01').innerHTML += `<br><b>To Arduino:</b> ${myText}`;
+    } catch (err) {
+      document.getElementById('mySpan01').innerHTML += `<br>Error writing: ${err.message}`;
+    }
+  }
+</script>
