@@ -1,0 +1,159 @@
+// for the esp32 code to work need to delete the documents --> libraries --> arduinoBLE library
+
+
+
+#if defined(ESP32)
+  #include <BLEDevice.h>
+  #include <BLEServer.h>
+  #include <BLEUtils.h>
+  #include <BLE2902.h>
+#else
+  #include <ArduinoBLE.h>
+#endif
+
+#define MY_SERVICE_UUID       "19b10000-e8f2-537e-4f6c-d104768a1214"
+#define MY_CHARACTERISTIC_UUID "19b10000-e8f2-537e-4f6c-d104768a1214"
+
+unsigned long myLastSendTime = 0;
+
+#if defined(ESP32)
+BLECharacteristic *myCharacteristic;
+bool myDeviceConnected = false;
+
+class MyCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic* pChar) override {
+    String value = pChar->getValue();  // Arduino String returned here
+
+    if (value.length() > 0) {
+      Serial.print("Received over BLE: ");
+      Serial.println(value);
+
+      // Example command handling:
+      if (value == "start") {
+        Serial.println("Command: start");
+        // Do something for start...
+      } else if (value == "stop") {
+        Serial.println("Command: stop");
+        // Do something for stop...
+      } else {
+        Serial.println("Command: unknown");
+      }
+    }
+  }
+};
+
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer* pServer) {
+    myDeviceConnected = true;
+    Serial.println("Central connected");
+  }
+  void onDisconnect(BLEServer* pServer) {
+    myDeviceConnected = false;
+    Serial.println("Central disconnected");
+    pServer->getAdvertising()->start();
+  }
+};
+#else
+BLEService myService(MY_SERVICE_UUID);
+BLECharacteristic myCharacteristic(MY_CHARACTERISTIC_UUID, BLERead | BLEWrite | BLENotify, 32);
+#endif
+
+void setup() {
+  Serial.begin(115200);
+  delay(5000);
+  Serial.println("waited 5 seconds");
+
+  pinMode(0, INPUT);  // Set D0 as input
+
+#if defined(ESP32)
+  BLEDevice::init("ESP32-BLE-String");
+  BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  BLEService *pService = pServer->createService(MY_SERVICE_UUID);
+
+  myCharacteristic = pService->createCharacteristic(
+    MY_CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_READ |
+    BLECharacteristic::PROPERTY_WRITE |
+    BLECharacteristic::PROPERTY_NOTIFY
+  );
+
+  myCharacteristic->addDescriptor(new BLE2902());
+  myCharacteristic->setValue("ready");
+  myCharacteristic->setCallbacks(new MyCallbacks());
+
+  pService->start();
+  pServer->getAdvertising()->addServiceUUID(MY_SERVICE_UUID);
+  pServer->getAdvertising()->start();
+
+  Serial.println("BLE ready on ESP32");
+#else
+  if (!BLE.begin()) {
+    Serial.println("BLE failed to start");
+    while (1);
+  }
+
+  BLE.setLocalName("MBED-BLE-String");
+  BLE.setAdvertisedService(myService);
+  myService.addCharacteristic(myCharacteristic);
+  BLE.addService(myService);
+
+  myCharacteristic.writeValue("ready");
+  BLE.advertise();
+
+  Serial.println("BLE ready on Arduino BLE");
+#endif
+}
+
+void loop() {
+#if defined(ESP32)
+  if (myDeviceConnected) {
+    if (digitalRead(0) == HIGH && millis() - myLastSendTime > 1000) {
+      myCharacteristic->setValue("D0 is HIGH");
+      myCharacteristic->notify();
+      Serial.println("Sent: D0 is HIGH");
+      myLastSendTime = millis();
+    }
+  }
+#else
+  BLEDevice central = BLE.central();
+  if (central) {
+    Serial.print("Connected to: ");
+    Serial.println(central.address());
+
+    while (central.connected()) {
+      if (digitalRead(0) == HIGH && millis() - myLastSendTime > 1000) {
+        myCharacteristic.writeValue("D0 is HIGH");
+        Serial.println("Sent: D0 is HIGH");
+        myLastSendTime = millis();
+        delay(50);
+      }
+
+      if (myCharacteristic.written()) {
+        int len = myCharacteristic.valueLength();
+        uint8_t buffer[33] = {0};
+        myCharacteristic.readValue(buffer, len);
+        buffer[len] = '\0';
+        String incoming = (char*)buffer;
+
+        Serial.print("Web says: ");
+        Serial.println(incoming);
+
+        if (incoming == "start") {
+          myCharacteristic.writeValue("working");
+          Serial.println("Sent: working");
+        } else if (incoming == "stop") {
+          myCharacteristic.writeValue("done");
+          Serial.println("Sent: done");
+        } else {
+          myCharacteristic.writeValue("unknown");
+          Serial.println("Sent: unknown");
+        }
+        delay(50);
+      }
+    }
+    Serial.println("Disconnected.");
+  }
+#endif
+}
