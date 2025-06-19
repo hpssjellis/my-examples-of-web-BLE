@@ -3,7 +3,7 @@ my-examples-of-web-ble
 
 
 
-New stuff in the 2025 folder    [2025](2025)
+New stuff in the 2025 folder in the public folder   [public/2025](public/2025)
 
 started June 2025
 
