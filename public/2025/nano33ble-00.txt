@@ -13,14 +13,14 @@ void setup() {
   delay(5000);
   Serial.println("waited 5 seconds");
 
-  pinMode(D0, INPUT);  // Set D0 as input
+  pinMode(0, INPUT);  // Set D0 as input
 
   if (!BLE.begin()) {
     Serial.println("BLE failed to start");
     while (1);
   }
 
-  BLE.setLocalName("PortentaStringBLE");
+  BLE.setLocalName("MBED-BLE-String");
   BLE.setAdvertisedService(myService);
   myService.addCharacteristic(myStringChar);
   BLE.addService(myService);
@@ -42,6 +42,7 @@ void loop() {
       // ✅ Check if D0 is HIGH and send notification
       if (digitalRead(D0) == HIGH && millis() - myLastSendTime > 1000) {
         myStringChar.writeValue("D0 is HIGH");
+        delay(50);
         Serial.println("Sent: D0 is HIGH");
         myLastSendTime = millis();
       }
@@ -60,12 +61,15 @@ void loop() {
         if (incoming == "start") {
           myStringChar.writeValue("working");
           Serial.println("Sent: working");
+          delay(50);
         } else if (incoming == "stop") {
           myStringChar.writeValue("done");
           Serial.println("Sent: done");
+          delay(50);
         } else {
           myStringChar.writeValue("unknown");
           Serial.println("Sent: unknown");
+          delay(50);
         }
       }
     }
