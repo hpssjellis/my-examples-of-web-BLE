@@ -1,103 +1,80 @@
-<h2 align="center">Two-Way BLE String Example</h2>
+<input type="button" id="btnConnect" value="Connect BLE" onclick="myConnectBLE()"><br><br>
+<input type="button" id="btnStart" value="Send: start" onclick="mySendString('start')">
+<input type="button" id="btnStop" value="Send: stop" onclick="mySendString('stop')">
+<input type="button" value="Clear Log" onclick="myClearLog()"><br><br>
 
-<input type="button" value="Connect BLE" onclick="{ myConnectBLE() }"><br><br>
-<input type="button" value="Send: start" onclick="{ mySendString('start') }">
-<input type="button" value="Send: stop" onclick="{ mySendString('stop') }">
-<input type="button" value="Clear Log" onclick="{ myClearLog() }"><br><br>
-
-<textarea id="myTextLog" rows="12" cols="60" readonly style="display:block;"></textarea>
+<textarea id="myTextLog" rows="12" cols="60" readonly></textarea>
 
 <script>
-  document.myDevice = null;
-  document.myServer = null;
-  document.myService = null;
-  document.myCharacteristic = null;
-
-  document.myWriteQueue = [];
-  document.myIsWriting = false;
+  let myCharacteristic = null;
+  let isWriting = false;
 
   async function myConnectBLE() {
     myAddLog("Connecting...");
-
     try {
-      document.myDevice = await navigator.bluetooth.requestDevice({
+      const device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: ['19b10000-e8f2-537e-4f6c-d104768a1214']
       });
+      const server = await device.gatt.connect();
+      const service = await server.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+      myCharacteristic = await service.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
 
-      document.myServer = await document.myDevice.gatt.connect();
-      document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
-      document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
+      await myCharacteristic.startNotifications();
+      myCharacteristic.addEventListener('characteristicvaluechanged', event => {
+        const value = new TextDecoder().decode(event.target.value);
+        myAddLog("Arduino sent → Web: " + value);
+      });
 
-      await document.myCharacteristic.startNotifications();
+      myAddLog("Connected to: " + device.name);
 
-      if (!document.myCharacteristic._hasListener) {
-        document.myCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
-          let decoder = new TextDecoder("utf-8");
-          let message = decoder.decode(event.target.value);
-          myAddLog("Arduino sent → Web: " + message);
-        });
-        document.myCharacteristic._hasListener = true;
-      }
+      device.addEventListener('gattserverdisconnected', () => {
+        myAddLog("Device disconnected.");
+        myCharacteristic = null;
+      });
 
-      myAddLog("Connected to: " + document.myDevice.name);
     } catch (err) {
       myAddLog("Connection failed: " + err.message);
     }
   }
 
-  function mySendString(myText) {
-    if (!document.myCharacteristic) {
-      alert("Connect first!");
+  async function mySendString(text) {
+    if (!myCharacteristic) {
+      alert("Please connect first.");
       return;
     }
-
-    document.myWriteQueue.push(myText);
-    myProcessWriteQueue();
-  }
-
-  async function myProcessWriteQueue() {
-    if (document.myIsWriting || document.myWriteQueue.length === 0 || !document.myCharacteristic) return;
-
-    document.myIsWriting = true;
-    let nextText = document.myWriteQueue.shift();
+    if (isWriting) return;
 
     try {
-      let encoder = new TextEncoder();
-      let data = encoder.encode(nextText);
-      await document.myCharacteristic.writeValue(data);
-      myAddLog("Web sent → Arduino: " + nextText);
+      isWriting = true;
+      disableButtons(true);
+
+      const encoded = new TextEncoder().encode(text);
+      await myCharacteristic.writeValue(encoded);
+      myAddLog("Web sent → Arduino: " + text);
+
+      await new Promise(resolve => setTimeout(resolve, 100)); // throttle
     } catch (err) {
-      myAddLog("Error writing: " + err.message);
+      myAddLog("Write error: " + err.message);
     } finally {
-      document.myIsWriting = false;
-      setTimeout(myProcessWriteQueue, 10);
+      isWriting = false;
+      disableButtons(false);
     }
   }
 
-  function myAddLog(myLine) {
-    let now = new Date();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
-    let ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12 || 12;
-    let paddedMinutes = minutes < 10 ? '0' + minutes : minutes;
-    let paddedSeconds = seconds < 10 ? '0' + seconds : seconds;
-
-    let timestamp = `${hours}:${paddedMinutes}:${paddedSeconds} ${ampm} ${now.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    })}`;
-
-    let fullLine = `${timestamp} - ${myLine}`;
-    let myTextArea = document.getElementById("myTextLog");
-    myTextArea.value = fullLine + "\n" + myTextArea.value;
+  function disableButtons(disable) {
+    document.getElementById('btnStart').disabled = disable;
+    document.getElementById('btnStop').disabled = disable;
   }
 
   function myClearLog() {
     document.getElementById("myTextLog").value = "";
+  }
+
+  function myAddLog(line) {
+    const now = new Date().toLocaleTimeString('en-US');
+    const log = `${now} - ${line}`;
+    const logArea = document.getElementById("myTextLog");
+    logArea.value = log + "\n" + logArea.value;
   }
 </script>
