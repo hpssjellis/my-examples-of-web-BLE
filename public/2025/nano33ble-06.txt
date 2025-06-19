@@ -1,0 +1,75 @@
+#include <ArduinoBLE.h>
+
+BLEService myService("19b10000-e8f2-537e-4f6c-d104768a1214");
+
+BLECharacteristic myStringChar("19b10000-e8f2-537e-4f6c-d104768a1214",
+                               BLERead | BLEWrite | BLENotify,
+                               32);  // up to 32-byte string
+
+unsigned long myLastSendTime = 0;
+
+void setup() {
+  Serial.begin(115200);
+  delay(5000);
+  Serial.println("waited 5 seconds");
+
+  pinMode(D0, INPUT);  // Set D0 as input
+
+  if (!BLE.begin()) {
+    Serial.println("BLE failed to start");
+    while (1);
+  }
+
+  BLE.setLocalName("PortentaStringBLE");
+  BLE.setAdvertisedService(myService);
+  myService.addCharacteristic(myStringChar);
+  BLE.addService(myService);
+
+  myStringChar.writeValue("ready");
+  BLE.advertise();
+
+  Serial.println("BLE String Service Started");
+}
+
+void loop() {
+  BLEDevice central = BLE.central();
+
+  if (central) {
+    Serial.print("Connected to: ");
+    Serial.println(central.address());
+
+    while (central.connected()) {
+      // ✅ Check if D0 is HIGH and send notification
+      if (digitalRead(D0) == HIGH && millis() - myLastSendTime > 1000) {
+        myStringChar.writeValue("D0 is HIGH");
+        Serial.println("Sent: D0 is HIGH");
+        myLastSendTime = millis();
+      }
+
+      // ✅ Handle incoming messages from the webpage
+      if (myStringChar.written()) {
+        int len = myStringChar.valueLength();
+        uint8_t buffer[33] = {0};
+        myStringChar.readValue(buffer, len);
+        buffer[len] = '\0';
+        String incoming = (char*)buffer;
+
+        Serial.print("Web says: ");
+        Serial.println(incoming);
+
+        if (incoming == "start") {
+          myStringChar.writeValue("working");
+          Serial.println("Sent: working");
+        } else if (incoming == "stop") {
+          myStringChar.writeValue("done");
+          Serial.println("Sent: done");
+        } else {
+          myStringChar.writeValue("unknown");
+          Serial.println("Sent: unknown");
+        }
+      }
+    }
+
+    Serial.println("Disconnected.");
+  }
+}
