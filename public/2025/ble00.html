@@ -1,0 +1,69 @@
+<h2 align="center">Two-Way BLE String Example</h2>
+
+<input type="button" value="Connect BLE" onclick="{ myConnectBLE() }"><br><br>
+<input type="button" value="Send: start" onclick="{ mySendString('start') }">
+<input type="button" value="Send: stop" onclick="{ mySendString('stop') }">
+<input type="button" value="Clear Log" onclick="{ myClearLog() }"><br><br>
+
+<textarea id="myTextLog" rows="12" cols="50" readonly style="display:block;"></textarea>
+
+<script>
+  document.myDevice = null
+  document.myServer = null
+  document.myService = null
+  document.myCharacteristic = null
+
+  async function myConnectBLE() {
+    myAddLog("Connecting...")
+
+    try {
+      document.myDevice = await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: ['19b10000-e8f2-537e-4f6c-d104768a1214']
+      });
+
+      document.myServer = await document.myDevice.gatt.connect();
+      document.myService = await document.myServer.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+      document.myCharacteristic = await document.myService.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
+
+      await document.myCharacteristic.startNotifications();
+      document.myCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
+        let decoder = new TextDecoder("utf-8");
+        let message = decoder.decode(event.target.value);
+        myAddLog("From Arduino: " + message);
+        console.log("Notification:", message);
+      });
+
+      myAddLog("Connected to: " + document.myDevice.name);
+
+    } catch (err) {
+      myAddLog("Connection failed: " + err.message);
+      console.error(err);
+    }
+  }
+
+  async function mySendString(myText) {
+    if (!document.myCharacteristic) {
+      alert("Connect first!");
+      return;
+    }
+
+    try {
+      let encoder = new TextEncoder();
+      let data = encoder.encode(myText);
+      await document.myCharacteristic.writeValue(data);
+      myAddLog("To Arduino: " + myText);
+    } catch (err) {
+      myAddLog("Error writing: " + err.message);
+    }
+  }
+
+  function myAddLog(myLine) {
+    let myTextArea = document.getElementById("myTextLog");
+    myTextArea.value = myLine + "\n" + myTextArea.value;
+  }
+
+  function myClearLog() {
+    document.getElementById("myTextLog").value = "";
+  }
+</script>
