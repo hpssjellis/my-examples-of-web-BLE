@@ -1,0 +1,83 @@
+<input type="button" id="btnConnect" value="Connect BLE" onclick="myConnectBLE()"><br><br>
+<input type="button" id="btnStart" value="Send: start" onclick="mySendString('start')">
+<input type="button" id="btnStop" value="Send: stop" onclick="mySendString('stop')">
+<input type="button" value="Clear Log" onclick="myClearLog()"><br><br>
+
+<textarea id="myTextLog" rows="12" cols="60" readonly></textarea>
+
+<script>
+  let myCharacteristic = null;
+  let myDevice = null;
+  let isWriting = false;
+
+  async function myConnectBLE() {
+    myAddLog("Connecting...");
+    try {
+      myDevice = await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: ['19b10000-e8f2-537e-4f6c-d104768a1214']
+      });
+
+      const server = await myDevice.gatt.connect();
+      const service = await server.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+      myCharacteristic = await service.getCharacteristic('19b10000-e8f2-537e-4f6c-d104768a1214');
+
+      await myCharacteristic.startNotifications();
+      myCharacteristic.addEventListener('characteristicvaluechanged', event => {
+        const value = new TextDecoder().decode(event.target.value);
+        myAddLog("Arduino sent → Web: " + value);
+      });
+
+      myDevice.addEventListener('gattserverdisconnected', myHandleDisconnect);
+
+      myAddLog("Connected to: " + myDevice.name);
+
+    } catch (err) {
+      myAddLog("Connection failed: " + err.message);
+    }
+  }
+
+  async function mySendString(text) {
+    if (!myCharacteristic) {
+      alert("Please connect first.");
+      return;
+    }
+    if (isWriting) return;
+
+    try {
+      isWriting = true;
+      document.getElementById('btnStart').disabled = true;
+      document.getElementById('btnStop').disabled = true;
+
+      const encoded = new TextEncoder().encode(text);
+      await myCharacteristic.writeValue(encoded);
+      myAddLog("Web sent → Arduino: " + text);
+
+      await new Promise(resolve => setTimeout(resolve, 100)); // throttle
+    } catch (err) {
+      myAddLog("Write error: " + err.message);
+    } finally {
+      isWriting = false;
+      document.getElementById('btnStart').disabled = false;
+      document.getElementById('btnStop').disabled = false;
+    }
+  }
+
+  function myHandleDisconnect() {
+    myAddLog("Device disconnected.");
+    myCharacteristic = null;
+    myDevice = null;
+    alert("BLE device disconnected. Please reconnect.");
+  }
+
+  function myClearLog() {
+    document.getElementById("myTextLog").value = "";
+  }
+
+  function myAddLog(line) {
+    const now = new Date().toLocaleTimeString('en-US');
+    const log = `${now} - ${line}`;
+    const logArea = document.getElementById("myTextLog");
+    logArea.value = log + "\n" + logArea.value;
+  }
+</script>
